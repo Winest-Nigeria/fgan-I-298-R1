@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+capability_types:
+  test_cap:
+    derived_from: tosca.capabilities.Root
+
+relationship_types:
+  basicrelationship:
+    derived_from: tosca.relationships.Root
+    
+topology_template:
+  node_templates:
+    knowledge_base:
+      type: tosca.nodes.SoftwareComponent
+      description: Stores knowledge related to the AN.
+      requirements:
+        - export:
+            node: knowledge_base
+            relationship: exports
+        - import:
+            node: knowledge_base
+            relationship: imports
+    
+    knowledge_base_manager:
+      type: tosca.nodes.SoftwareComponent
+      requirements:
+        - export:
+            node: knowledge_base
+            relationship: exports
+        - optimize:
+            node: knowledge_base
+            relationship: optimizes
+            
+    AN_Orchestrator:
+      type: tosca.nodes.Compute
+      description: Converts use case description to TOSCA controller specification
+      requirements:
+        - refer:
+            node: knowledge_base
+            relationship: refersTo
+        - generates_Tosca:
+            node: Auto_Controller_Generator
+            relationship: generates
+            
+    Auto_Controller_Generator:
+      type: tosca.nodes.SoftwareComponent 
+      description: Generate controller specifications
+      requirements:
+        - dependency: ML_pipeline
+        
+    OpenCN:
+      type: tosca.nodes.SoftwareComponent
+      description: Stores controllers
+    
+    ML_pipeline:
+      type: tosca.nodes.SoftwareComponent
+      description: Hosts analytics and recommends controllers
+      
+    Human_operator:
+      type: tosca.nodes.SoftwareComponent
+      description: Reads reports and monitors entire system
+          
+  relationship_templates:
+    refersTo:
+      type: basicrelationship
+    optimizes:
+      type: basicrelationship
+    exports:
+      type: basicrelationship
+    stores:
+      type: basicrelationship
+    recommends:
+      type: basicrelationship
+    imports:
+      type: basicrelationship
+    reads:
+      type: basicrelationship
+    monitors:
+      type: basicrelationship
+    inputs:
+      type: basicrelationship
+    generates :
+      type: basicrelationship
+          
