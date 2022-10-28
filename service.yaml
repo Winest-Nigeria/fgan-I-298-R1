@@ -4,49 +4,48 @@ relationship_types:
     derived_from: tosca.relationships.Root
 topology_template:
   node_templates:
-    knowledge_base:
+    Knowledge Base:
       type: tosca.nodes.SoftwareComponent
       description: Stores knowledge related to the AN.
       requirements:
       - export:
-          node: knowledge_base
+          node: Knowledge Base
           relationship: exports
       - import:
-          node: knowledge_base
+          node: Knowledge Base
           relationship: imports
-    knowledge_base_manager:
+    Knowledge Base Manager:
       type: tosca.nodes.SoftwareComponent
       requirements:
       - export:
-          node: knowledge_base
+          node: Knowledge Base
           relationship: exports
       - optimize:
-          node: knowledge_base
+          node: Knowledge Base
           relationship: optimizes
-    AN_Orchestrator:
+    AN Orchestrator:
       type: tosca.nodes.Compute
-      description: Converts use case description to TOSCA controller specification
       requirements:
       - refer:
-          node: knowledge_base
+          node: Knowledge Base
           relationship: refersTo
       - generates_Tosca:
-          node: Auto_Controller_Generator
+          node: Auto controller generator
           relationship: generates
-    Auto_Controller_Generator:
+    Auto controller generator:
       type: tosca.nodes.SoftwareComponent
       description: Generate controller specifications
       requirements:
-      - dependency: ML_pipeline
+      - dependency: ML Pipeline
     OpenCN:
       type: tosca.nodes.SoftwareComponent
       description: Stores controllers
-    ML_pipeline:
+    ML Pipeline:
       type: tosca.nodes.SoftwareComponent
-      description: Stores controllers
-    Human_operator:
+      description: Hosts analytics
+    Human operator:
       type: tosca.nodes.SoftwareComponent
-      description: Stores controllers
+      description: Reads reports and monitors
   relationship_templates:
     refersTo:
       type: basicrelationship
